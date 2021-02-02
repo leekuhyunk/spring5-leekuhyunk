@@ -42,8 +42,12 @@ public class LoginController {
 	//로그인 후 세션 처리 매핑 - 네이버 아이디 로그인 로직일때
 	//session(인증토큰정보),state(유효성검증용UUID정보),code(인증성공/실패 코드 예,00 OK/01 Error )
 	@RequestMapping(value="/login_callback",method= {RequestMethod.GET, RequestMethod.POST})
-	public String login_callback(Model model, @RequestParam String code, @RequestParam String state, HttpSession session, RedirectAttributes rdat) throws IOException, ParseException {
-		
+	public String login_callback(Model model, @RequestParam (required=false) String code, @RequestParam String state, HttpSession session, RedirectAttributes rdat) throws IOException, ParseException {
+		//네아로에서 로그인 취소 했을때 code값이 널 일때 처리(아래)
+		if(code == null) {
+			rdat.addFlashAttribute("naver_msg", "fail");
+			return "redirect:/login";
+		}
 		OAuth2AccessToken oauthToken;//토큰으로 사용할 변수 선언
 		//NaverLoginController 의 메서드 호출(아래)
 		oauthToken = naverLoginController.getAccessToken(session, code, state);
@@ -82,7 +86,7 @@ public class LoginController {
 			session.setAttribute("session_levels", "ROLE_USER");
 			session.setAttribute("session_username", username);
 			session.setAttribute("session_type", "sns");
-			rdat.addFlashAttribute("msg","네이버 아이디 로그인");
+			rdat.addFlashAttribute("msg","sns 아이디 로그인");
 		} else {
 			rdat.addFlashAttribute("param.msg", "fail");//login.jsp전용 메세지
 			return "redirect:/login";
