@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * MemberServiceImpl는 DAO메서드 호출을 구현
- * @author 김일국
+ * @author 이규혁
  *
  */
 @Service
@@ -59,12 +59,6 @@ public class MemberServiceImpl implements IF_MemberService {
 	}
 
 	@Override
-	public void herokuJobmethod() throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void herokuJobMethod() throws Exception {
 		// 월-금 오전8시부터 오후 11시 (미국시간 23,0-14) 헤로쿠앱에 20분간격으로 URL접근
 		String urlStr = "https://spring5-leekuhyunk.herokuapp.com";//본인앱주소
@@ -79,6 +73,15 @@ public class MemberServiceImpl implements IF_MemberService {
 			System.out.println("헤로쿠 앱이 비활성화 상태 입니다.");
 		}
 	}
-	
+
+	@Override
+	public void testJob() throws Exception {
+		// DAO호출해서 반환값으로 회원목록을 받습니다.(아래)
+		List<MemberVO> memberList = memberDAO.testJob();
+		System.out.println("6개월 동안 회원정보 수정이 없는 회원정보는...(아래)");
+		for(MemberVO memberVO:memberList) {
+			System.out.println(memberVO.getUser_id()+":"+memberVO.getEmail());
+		}
+	}
 
 }
